@@ -601,7 +601,7 @@ class TestBatchTranslationMCPTools:
             mock_ctx = MagicMock()
 
             result = await server.list_translation_jobs(
-                ctx=mock_ctx, status_filter='ALL', max_results=50
+                ctx=mock_ctx, status_filter='ALL', max_results=50, next_token=None
             )
 
             assert result['total_count'] == 2
@@ -609,7 +609,26 @@ class TestBatchTranslationMCPTools:
             assert result['jobs'][0]['job_id'] == 'job-1'
             assert result['jobs'][1]['job_id'] == 'job-2'
 
-            mock_batch.list_translation_jobs.assert_called_once_with('ALL', 50)
+            mock_batch.list_translation_jobs.assert_called_once_with('ALL', 50, None)
+
+    @pytest.mark.asyncio
+    async def test_list_translation_jobs_forwards_next_token(self):
+        """The next_token argument must reach the batch manager."""
+        with patch.object(server, 'batch_manager') as mock_batch:
+            mock_batch.list_translation_jobs.return_value = {
+                'jobs': [],
+                'next_token': 'page-3',
+                'total_count': 0,
+            }
+
+            from unittest.mock import MagicMock
+
+            result = await server.list_translation_jobs(
+                ctx=MagicMock(), status_filter=None, max_results=10, next_token='page-2'
+            )
+
+            mock_batch.list_translation_jobs.assert_called_once_with(None, 10, 'page-2')
+            assert result['next_token'] == 'page-3'
 
 
 class TestTerminologyMCPTools:

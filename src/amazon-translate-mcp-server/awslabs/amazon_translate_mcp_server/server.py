@@ -563,7 +563,7 @@ async def list_translation_jobs(
         # Run synchronous method in thread pool
         loop = asyncio.get_event_loop()
         result = await loop.run_in_executor(
-            None, batch_manager.list_translation_jobs, status_filter, max_results
+            None, batch_manager.list_translation_jobs, status_filter, max_results, next_token
         )
 
         if isinstance(result, list):

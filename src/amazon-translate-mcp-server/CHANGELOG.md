@@ -16,6 +16,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Updated pyproject.toml with complete project scripts and entry points
 - Enhanced documentation structure and navigation
 
+### Fixed
+- `list_translation_jobs` now forwards `next_token` to the batch manager, so pagination past the first page works
+
 ## [1.0.0] - 2025-01-05
 
 ### Added
