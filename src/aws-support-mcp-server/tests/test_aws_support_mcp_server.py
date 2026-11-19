@@ -2265,6 +2265,20 @@ async def test_describe_cases_markdown_format(mock_support_client):
 
 
 @patch('awslabs.aws_support_mcp_server.server.support_client')
+async def test_describe_cases_forwards_max_results(mock_support_client):
+    """Test describe_cases_logic passes max_results through to the client."""
+    mock_support_client.describe_cases = AsyncMock(return_value={'cases': []})
+
+    context = MagicMock()
+
+    await _describe_support_cases_logic(context, max_results=5, next_token='tok')
+
+    kwargs = mock_support_client.describe_cases.call_args.kwargs
+    assert kwargs['max_results'] == 5
+    assert kwargs['next_token'] == 'tok'
+
+
+@patch('awslabs.aws_support_mcp_server.server.support_client')
 async def test_add_communication_validation_error(mock_support_client):
     """Test add_communication_logic handles ValidationError correctly."""
     # Setup mocks

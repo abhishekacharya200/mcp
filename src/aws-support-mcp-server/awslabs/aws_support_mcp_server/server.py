@@ -353,6 +353,7 @@ async def _describe_support_cases_logic(
             include_resolved_cases=include_resolved_cases,
             include_communications=include_communications,
             language=language,
+            max_results=max_results,
             next_token=next_token if next_token else None,
         )
 
